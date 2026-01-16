@@ -2,18 +2,29 @@
 
 A fun project to test out AI-assisted workflow, built with Claude Code and Google AI Studio.
 
-## What is this?
+![Screenshot](assets/screenshot.png)
 
-A gold price calculator terminal for Myanmar market that:
+## Features
 
-- Calculates local gold prices from world spot price
-- Discovers implied USD/MMK exchange rate from gold prices
-- Features proper Myanmar typography
+- **Gold Price Calculator** - Calculate local gold prices from world spot price
+- **Implied Rate Discovery** - Discover USD/MMK exchange rate from gold prices
+- **Full Burmese UI** - Complete Myanmar language interface
+- **Proper Myanmar Typography** - Local fonts for digits and text
+
+## Tech Stack
+
+- React + TypeScript
+- Tailwind CSS
+- Vite
+- Local Myanmar fonts (MyanmarChatu, MasterpieceUni)
 
 ## Run Locally
 
 ```bash
+# Install dependencies
 npm install
+
+# Start dev server
 npm run dev
 ```
 
@@ -24,13 +35,15 @@ bun install
 bun dev
 ```
 
-## Built With
+## Fonts
 
-- React + TypeScript
-- Tailwind CSS
-- Vite
-- Claude Code (AI-assisted development)
+This project uses local Myanmar fonts for proper script rendering:
+
+| Font | Usage |
+|------|-------|
+| **MyanmarChatu** | Digits and short labels (ကျပ်, သိန်း) |
+| **MasterpieceUni** | Body text and explanations |
 
 ---
 
-*This project was created as an experiment in AI-assisted development workflow.*
+*Built with Claude Code as an experiment in AI-assisted development.*

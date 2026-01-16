@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>မြန်မာ့ရွှေ တာမီနယ်</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --paper-bg: #EAE5D9;
+        --paper-dark: #D4CDC0;
+        --ink-black: #1A1A1A;
+        --bloomberg-orange: #FF5500;
+        --grid-line: #A8A295;
+      }
+      
+      /* Font Definitions */
+      @font-face {
+        font-family: 'MyanmarChatu';
+        src: url('/assets/myanmar-chatu.ttf') format('truetype');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: 'MyanmarChatu';
+        src: url('/assets/myanmar-chatu-light.ttf') format('truetype');
+        font-weight: 300;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: 'MasterpieceUni';
+        src: url('/assets/masterpiece-uni-type.ttf') format('truetype');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      body {
+        background-color: var(--paper-bg);
+        color: var(--ink-black);
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      /* ======================
+         Myanmar Font Classes
+         ====================== */
+
+      /* Myanmar body text (paragraphs, explanations) - MasterpieceUni */
+      .font-mm {
+        font-family: 'MasterpieceUni', 'Noto Sans Myanmar', sans-serif;
+      }
+
+      /* Faux bold for MasterpieceUni (single weight font) */
+      .font-mm-bold {
+        font-family: 'MasterpieceUni', 'Noto Sans Myanmar', sans-serif;
+        -webkit-text-stroke: 0.75px currentColor;
+      }
+
+      /* Mixed English + Myanmar (headers like "01. ပုံသေနည်း") - for InfoBlock */
+      .font-mono-mm {
+        font-family: 'JetBrains Mono', 'MasterpieceUni', monospace;
+      }
+
+      /* Mixed English + Myanmar with MyanmarChatu - for calculator labels */
+      .font-mono-chatu {
+        font-family: 'JetBrains Mono', 'MyanmarChatu', monospace;
+        font-weight: 300;
+        letter-spacing: 0.02em;
+      }
+
+      /* Myanmar digits & short labels (ကျပ်, သိန်း, time) - MyanmarChatu */
+      .font-burmese-num {
+        font-family: 'MyanmarChatu', 'Noto Sans Myanmar', sans-serif;
+        line-height: 1.6;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.05em;
+      }
+
+      .font-burmese-num-light {
+        font-family: 'MyanmarChatu', 'Noto Sans Myanmar', sans-serif;
+        font-weight: 300;
+        line-height: 1.6;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.02em;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--paper-dark);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--ink-black);
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--bloomberg-orange);
+      }
+      
+      /* CRT Flicker Animation (Subtle) */
+      @keyframes flicker {
+        0% { opacity: 0.98; }
+        50% { opacity: 1; }
+        100% { opacity: 0.98; }
+      }
+      .crt-flicker {
+        animation: flicker 0.15s infinite;
+        pointer-events: none;
+      }
+
+      /* Marquee */
+      @keyframes marquee {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+      }
+      .animate-marquee {
+        white-space: nowrap;
+        animation: marquee 20s linear infinite;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

@@ -6,11 +6,15 @@ import { OZ_TO_KYATTHAR_CONSTANT, DEFAULT_WORLD_PRICE, DEFAULT_EXCHANGE_RATE, DE
 import { CalculationMode } from './types';
 import { toMyanmarDigits, formatMyanmarTime } from './utils';
 
+const API_TIMEOUT_MS = 10000;
+const MIN_VALID_GOLD_PRICE = 100;
+const MAX_VALID_GOLD_PRICE = 100000;
+
 const App: React.FC = () => {
   // State
   const [mode, setMode] = useState<CalculationMode>('PRICE');
   const [time, setTime] = useState(new Date());
-  
+
   // Inputs
   const [worldPrice, setWorldPrice] = useState<number>(DEFAULT_WORLD_PRICE);
   const [exchangeRate, setExchangeRate] = useState<number>(DEFAULT_EXCHANGE_RATE);
@@ -18,6 +22,7 @@ const App: React.FC = () => {
 
   const [isFetching, setIsFetching] = useState(false);
   const [isLivePrice, setIsLivePrice] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Update clock
   useEffect(() => {
@@ -25,18 +30,44 @@ const App: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Fetch Live Price
   const fetchLivePrice = useCallback(async () => {
     setIsFetching(true);
+    setFetchError(null);
+
     try {
-      const response = await fetch(GOLD_API_URL);
-      const data = await response.json();
-      if (data && data.price) {
-        setWorldPrice(data.price);
-        setIsLivePrice(true);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+
+      const response = await fetch(GOLD_API_URL, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP_ERROR_${response.status}`);
       }
+
+      const data = await response.json();
+
+      if (!data || typeof data.price !== 'number') {
+        throw new Error('INVALID_RESPONSE_FORMAT');
+      }
+
+      if (!Number.isFinite(data.price) || data.price < MIN_VALID_GOLD_PRICE || data.price > MAX_VALID_GOLD_PRICE) {
+        throw new Error('PRICE_OUT_OF_BOUNDS');
+      }
+
+      setWorldPrice(data.price);
+      setIsLivePrice(true);
     } catch (error) {
-      console.error("Failed to fetch gold price:", error);
+      if (import.meta.env.DEV) {
+        console.error("Failed to fetch gold price:", error);
+      }
+      setFetchError("ကမ္ဘာ့ရွှေဈေး ရယူ၍မရပါ။ ထပ်စမ်းကြည့်ပါ။");
+      setIsLivePrice(false);
     } finally {
       setTimeout(() => setIsFetching(false), 800);
     }
@@ -119,7 +150,7 @@ const App: React.FC = () => {
           <span className="mr-8">ငွေလဲလှယ်နှုန်း - အတက်အကျရှိ</span>
           <span className="mr-8">စနစ်အခြေအနေ - အဆင်ပြေ</span>
           <span className="mr-8">ကိန်းသေ - <span className="font-burmese-num-light">၁.၈၇၃</span> (အောင်စ မှ ကျပ်သား)</span>
-          <span className="mr-8">အချက်အလက် - {isFetching ? "ချိတ်ဆက်နေသည်..." : (isLivePrice ? "တိုက်ရိုက်ထုတ်လွှင့်မှု" : "ကိုယ်တိုင်ထည့်သွင်းမှု")}</span>
+          <span className="mr-8">အချက်အလက် - {isFetching ? "ချိတ်ဆက်နေသည်..." : (fetchError ? <span className="text-red-600">{fetchError}</span> : (isLivePrice ? "တိုက်ရိုက်ထုတ်လွှင့်မှု" : "ကိုယ်တိုင်ထည့်သွင်းမှု"))}</span>
         </div>
       </div>
 

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { toMyanmarDigits, parseMyanmarToEnglish } from '../utils';
 
+const DEFAULT_MIN = 0;
+const DEFAULT_MAX = 999999999;
+
 interface TerminalInputProps {
   label: string;
   value: number;
@@ -8,19 +11,21 @@ interface TerminalInputProps {
   prefix?: string;
   suffix?: string;
   min?: number;
+  max?: number;
   onAction?: () => void;
   actionLabel?: string;
   isActionLoading?: boolean;
   actionHighlight?: boolean;
 }
 
-const TerminalInput: React.FC<TerminalInputProps> = ({ 
-  label, 
-  value, 
-  onChange, 
-  prefix = "$", 
+const TerminalInput: React.FC<TerminalInputProps> = ({
+  label,
+  value,
+  onChange,
+  prefix = "$",
   suffix = "",
-  min = 0,
+  min = DEFAULT_MIN,
+  max = DEFAULT_MAX,
   onAction,
   actionLabel,
   isActionLoading = false,
@@ -41,8 +46,7 @@ const TerminalInput: React.FC<TerminalInputProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
-    
-    // allow clearing
+
     if (inputValue === '') {
       setDisplayValue('');
       onChange(0);
@@ -51,24 +55,24 @@ const TerminalInput: React.FC<TerminalInputProps> = ({
 
     const numericValue = parseMyanmarToEnglish(inputValue);
 
+    // Reject invalid numbers (NaN, Infinity, -Infinity)
+    if (!Number.isFinite(numericValue)) {
+      return;
+    }
+
     let newDisplay = inputValue;
-    
-    // Replace any English digit typed with Myanmar digit immediately in the string
     newDisplay = newDisplay.replace(/[0-9]/g, (d) => toMyanmarDigits(d));
-    
-    // Remove invalid chars (keep Myanmar digits and dots)
-    // Only allow one dot
+
     const parts = newDisplay.split('.');
     if (parts.length > 2) {
-        newDisplay = parts[0] + '.' + parts.slice(1).join('');
+      newDisplay = parts[0] + '.' + parts.slice(1).join('');
     }
 
     setDisplayValue(newDisplay);
-    
-    // Update parent with actual number
-    if (!isNaN(numericValue) && numericValue >= min) {
-      onChange(numericValue);
-    }
+
+    // Clamp value within bounds
+    const clampedValue = Math.max(min, Math.min(numericValue, max));
+    onChange(clampedValue);
   };
 
   return (
